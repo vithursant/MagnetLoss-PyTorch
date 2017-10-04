@@ -24,6 +24,9 @@ from magnet_loss.utils import plot_embedding, plot_smooth
 
 from utils.train_settings import parse_settings
 from utils.sampler import SubsetSequentialSampler
+from utils.average_meter import AverageMeter
+
+from visualizer.visualizer import VisdomLinePlotter
 
 from datasets.load_dataset import load_dataset
 
@@ -73,8 +76,8 @@ class LeNet(nn.Module):
 
 	def forward(self, x):
 		'''
-			Define the forward propagation function and automatically generates
-			the backward propagation function (autograd)
+		Define the forward propagation function and automatically generates
+		the backward propagation function (autograd)
 		'''
 
 		# Input x -> conv1 -> relu -> 2x2 the largest pool of windows ->
@@ -160,6 +163,8 @@ def run_magnet_loss():
 	alpha = 1.0
 	batch_size = m * d
 
+	global plotter
+	plotter = VisdomLinePlotter(env_name=args.name)
 
 	trainloader, testloader, trainset, testset, n_train = load_dataset(args)
 
@@ -185,7 +190,6 @@ def run_magnet_loss():
 
 	images = getattr(trainset, 'train_data')
 	labels = getattr(trainset, 'train_labels')
-	#pdb.set_trace()
 
 	# Get initial embedding
 	initial_reps = compute_reps(model, trainset, 400)
@@ -203,6 +207,8 @@ def run_magnet_loss():
 	trainloader.sampler.batch_example_inds = batch_example_inds
 
 	_ = model.train()
+
+	losses = AverageMeter()
 
 	for i in tqdm(range(n_steps)):
 		for batch_idx, (img, target) in enumerate(trainloader):
@@ -226,9 +232,9 @@ def run_magnet_loss():
 		batch_builder.update_losses(batch_example_inds,
 									batch_example_losses)
 
-		batch_losses.append(batch_loss)
+		batch_losses.append(batch_loss.data[0])
 
-		if not i % 10:
+		if not i % 1000:
 			print (i, batch_loss)
 
 		if not i % cluster_refresh_interval:
@@ -243,9 +249,14 @@ def run_magnet_loss():
 		batch_example_inds, batch_class_inds = batch_builder.gen_batch()
 		trainloader.sampler.batch_indices = batch_example_inds
 
+		losses.update(batch_loss, 1)
+
+		# log avg values to somewhere
+		if args.visdom:
+			plotter.plot('loss', 'train', i, losses.avg.data[0])
+
 	# Plot loss curve
-	#pdb.set_trace()
-	#plot_smooth(batch_losses, "batch-losses")
+	plot_smooth(batch_losses, "batch-losses")
 
 if __name__ == '__main__':
 	run_magnet_loss()
