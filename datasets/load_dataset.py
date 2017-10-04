@@ -12,22 +12,7 @@ from torchvision import transforms
 from datasets.fashion import FASHION
 
 import numpy
-from utils.sampler import SubsetSequentialSampler, ClassificationBasedSampler, SubsetSequentialSamplerSPLD
-
-def select_sampler(args):
-	if args.mining == 'sss':
-		train_idx = numpy.arange(len(trainset))
-		numpy.random.shuffle(train_idx)
-		n_train = len(train_idx) 
-		train_sampler = SubsetSequentialSampler(train_idx.tolist())
-	elif args.mining == 'kmeans':
-		hard_frac = 0.6
-		triplets_per_class = args.triplets_per_class  # keep at least 16 triplets per class, later increase to 32/64
-		train_sampler = ClassificationBasedSampler(args.num_classes,
-											int((hard_frac+hard_frac/2) * 
-												len(args.num_classes) * 
-													triplets_per_class))
-	return train_sampler
+from utils.sampler import SubsetSequentialSampler
 
 def load_dataset(args):
 	'''

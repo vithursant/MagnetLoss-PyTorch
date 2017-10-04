@@ -1,4 +1,8 @@
 import matplotlib.pyplot as plt
+import numpy as np
+from math import ceil
+from tqdm import tqdm
+import pdb
 
 import torch
 import torch.nn as nn
@@ -11,71 +15,19 @@ import torch.nn.init as init
 import torchvision
 from torchvision.datasets import MNIST, CIFAR10
 from torchvision import transforms
+import torchvision.models as models
+from models.vgg_cifar import VGG
 
-import numpy as np
-from math import ceil
 from magnet_loss.magnet_tools import *
 from magnet_loss.magnet_loss import MagnetLoss
-
-from utils.train_settings import parse_settings
-
-from utils.sampler import SubsetSequentialSampler
-
 from magnet_loss.utils import plot_embedding, plot_smooth
 
-import torchvision.models as models
+from utils.train_settings import parse_settings
+from utils.sampler import SubsetSequentialSampler
 
 from datasets.load_dataset import load_dataset
 
-from models.vgg_cifar import VGG
-
-from tqdm import tqdm
-
-import pdb
-
 args = parse_settings()
-
-class LayerNorm(nn.Module):
-
-    def __init__(self, features, eps=1e-6):
-        super().__init__()
-        self.gamma = nn.Parameter(torch.ones(features))
-        self.beta = nn.Parameter(torch.zeros(features))
-        self.eps = eps
-
-    def forward(self, x):
-        mean = x.mean(-1, keepdim=True)
-        std = x.std(-1, keepdim=True)
-        return self.gamma * (x - mean) / (std + self.eps) + self.beta
-
-class L2_Normalize(nn.Module):
-
-	def __init__(self, features):
-		super().__init__()
-
-	def forward(self, x):
-	    if not (isinstance(x, torch.DoubleTensor) or isinstance(x, torch.FloatTensor)):
-	        x = x.float()
-
-	    if len(x.size()) == 1:
-	        x = x.view(1, -1)
-	    norm = torch.sqrt(torch.sum(x * x, dim=1))
-	    norm = norm.view(-1, 1)
-
-	    return x / norm
-
-class L2Normalize(nn.Module):
-
-	def __init__(self, x, dim):
-		super(L2Normalize,self).__init__()
-		self.x = x
-		self.dim = dim
-
-	def forward(self, x):
-		x_l2norm = torch.norm(x, p=2, dim=self.dim, keepdim=True)
-		#x = x.div(xn.expand_as(x))
-
-		return x_l2norm
 
 # Build Network
 class LeNet(nn.Module):
@@ -84,8 +36,8 @@ class LeNet(nn.Module):
 		self.emb_dim = emb_dim
 
 		'''
-			Define the initialization function of LeNet, this function defines
-			the basic structure of the neural network
+		Define the initialization function of LeNet, this function defines
+		the basic structure of the neural network
 		'''
 
 		# Inherited the parent class initialization method, that is, first
@@ -142,8 +94,6 @@ class LeNet(nn.Module):
 		#x = x.view(-1, self.num_flat_features(x))
 		self.features = x
 		#self.features = features
-		#print(features)
-		#print(features)
 		#features.register_hook(print)
 
 		# Input x -> fc1 -> relu, update to x
@@ -170,10 +120,7 @@ class LeNet(nn.Module):
 		#norm_emb = x
 		norm_embeddings = self.l2_normalize(x, 1)
 		#pdb.set_trace()
-		#pdb.set_trace()
-		#pdb.set_trace()
 		return embeddings, norm_embeddings
-		#return self.embeddings, self.norm_embeddings
 
 	def num_flat_features(self, x):
 		'''
@@ -203,66 +150,10 @@ class LeNet(nn.Module):
 	def name(self):
 		return 'lenet-magnet'
 
-'''
-class CNNEncoder(EncoderBase):
-    """
-    Encoder built on CNN.
-    """
-    def __init__(self, num_layers, hidden_size,
-                 cnn_kernel_width, dropout, embeddings):
-        super(CNNEncoder, self).__init__()
-
-        self.embeddings = embeddings
-        input_size = embeddings.embedding_size
-        self.linear = nn.Linear(input_size, hidden_size)
-        self.cnn = StackedCNN(num_layers, hidden_size,
-                              cnn_kernel_width, dropout)
-
-    def forward(self, input, lengths=None, hidden=None):
-        """ See EncoderBase.forward() for description of args and returns."""
-        self._check_args(input, lengths, hidden)
-
-        emb = self.embeddings(input)
-        s_len, batch, emb_dim = emb.size()
-
-        emb = emb.transpose(0, 1).contiguous()
-        emb_reshape = emb.view(emb.size(0) * emb.size(1), -1)
-        emb_remap = self.linear(emb_reshape)
-        emb_remap = emb_remap.view(emb.size(0), emb.size(1), -1)
-        emb_remap = shape_transform(emb_remap)
-        out = self.cnn(emb_remap)
-
-        return emb_remap.squeeze(3).transpose(0, 1).contiguous(),\
-				out.squeeze(3).transpose(0, 1).contiguous()
-'''
-
-'''
-class EncoderCNN(nn.Module):
-    def __init__(self, embed_size):
-        """Loads the pretrained ResNet-152 and replace top fc layer."""
-        super(EncoderCNN, self).__init__()
-        self.resnet = models.resnet152(pretrained=True)
-        for param in self.resnet.parameters():
-            param.requires_grad = False
-        self.resnet.fc = nn.Linear(self.resnet.fc.in_features, embed_size)
-        self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
-        self.init_weights()
-        
-    def init_weights(self):
-        """Initialize weights."""
-        self.resnet.fc.weight.data.normal_(0.0, 0.02)
-        self.resnet.fc.bias.data.fill_(0)
-        
-    def forward(self, images):
-        """Extracts the image feature vectors."""
-        print(images)
-        features = self.resnet(images)
-        features = self.bn(features)
-
-        return features
-'''
-
 def run_magnet_loss():
+	'''
+	Test function for the magnet loss
+	'''
 	m = 8
 	d = 8
 	k = 3
@@ -299,12 +190,8 @@ def run_magnet_loss():
 	# Get initial embedding
 	initial_reps = compute_reps(model, trainset, 400)
 
-	#print(labels)
-	#print(labels.size())
-
 	if args.cifar10:
 		labels = np.array(labels, dtype=np.float32)
-	#exit()
 
 	# Create batcher
 	batch_builder = ClusterBatchBuilder(labels, k, m, d)
@@ -317,13 +204,8 @@ def run_magnet_loss():
 
 	_ = model.train()
 
-	#criterion = nn.CrossEntropyLoss(size_average=False)
 	for i in tqdm(range(n_steps)):
 		for batch_idx, (img, target) in enumerate(trainloader):
-			#print(batch_example_inds)
-			#print(batch_class_inds)
-			#print(len(batch_example_inds))
-			#print(img.size())
 
 			img = Variable(img).cuda()
 			#pdb.set_trace()
@@ -346,8 +228,8 @@ def run_magnet_loss():
 
 		batch_losses.append(batch_loss)
 
-		#if not i % 10:
-		#	print (i, batch_loss)
+		if not i % 10:
+			print (i, batch_loss)
 
 		if not i % cluster_refresh_interval:
 			print("Refreshing clusters")
@@ -362,7 +244,8 @@ def run_magnet_loss():
 		trainloader.sampler.batch_indices = batch_example_inds
 
 	# Plot loss curve
-	plot_smooth(batch_losses, "batch-losses")
+	#pdb.set_trace()
+	#plot_smooth(batch_losses, "batch-losses")
 
 if __name__ == '__main__':
 	run_magnet_loss()

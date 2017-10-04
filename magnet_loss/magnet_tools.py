@@ -1,11 +1,13 @@
 from math import ceil
 import numpy as np
+from tqdm import tqdm
+import pdb
+
 from sklearn.cluster import KMeans
+
 import torch
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
-from tqdm import tqdm
-import pdb
 
 def compute_reps(model, X, chunk_size):
     """Compute representations for input in chunks."""

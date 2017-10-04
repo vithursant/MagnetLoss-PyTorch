@@ -7,28 +7,9 @@ from sklearn.utils import linear_assignment_
 from scipy.stats import itemfreq
 from sklearn.cluster import KMeans
 from itertools import chain
-
-
-# Model building blocks
-'''
-def weight_variable(shape):
-    initial = tf.truncated_normal(shape, stddev=0.1)
-    return tf.Variable(initial)
-
-def bias_variable(shape):
-    initial = tf.constant(0.1, shape=shape)
-    return tf.Variable(initial)
-
-def conv2d(x, W):
-    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
-
-def max_pool_2x2(x):
-    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
-                        strides=[1, 2, 2, 1], padding='SAME')
-'''
+import pdb
 
 # Visualization
-
 def moving_average(a, n=3) :
     # Adapted from http://stackoverflow.com/questions/14313510/does-numpy-have-a-function-for-calculating-moving-average
     ret = np.cumsum(a, dtype=float)
@@ -36,6 +17,7 @@ def moving_average(a, n=3) :
     return ret[n - 1:] / n
 
 def plot_smooth(history, name):
+    #pdb.set_trace()
     plt.plot(history, 'c', moving_average(history, 20), 'b')
     plt.savefig(str(name) + '.eps')
 
