@@ -204,8 +204,9 @@ def run_magnet_loss():
 	batch_losses = []
 
 	batch_example_inds, batch_class_inds = batch_builder.gen_batch()
-	trainloader.sampler.batch_example_inds = batch_example_inds
-
+	trainloader.sampler.batch_indices = batch_example_inds
+	#pdb.set_trace()
+	
 	_ = model.train()
 
 	losses = AverageMeter()
@@ -227,6 +228,8 @@ def run_magnet_loss():
 													   	  			alpha)
 			batch_loss.backward()
 			optimizer.step()
+
+			pdb.set_trace()
 
 		# Update loss index
 		batch_builder.update_losses(batch_example_inds,
