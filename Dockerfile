@@ -13,10 +13,10 @@ RUN \
 	pandas \
 	tqdm \
 	pillow \
-	packaging \
-	appdirs \
+	setuptools --ignore-installed \
 	sklearn \
-	scipy
+	scipy \
+	visdom
 
 COPY ./ /root/MagnetLoss
 
