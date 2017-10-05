@@ -33,13 +33,13 @@ The program requires the following dependencies (easy to install using pip3, Ana
 
 To install MagnetLoss in an Anaconda environment:
 
-```python
+```sh
 conda env create -f environment.yml
 ```
 
 To activate Anaconda environment:
 
-```python
+```sh
 source activate magnet-loss
 ```
 
@@ -47,7 +47,7 @@ source activate magnet-loss
 
 Train ConvNet with Magnet Loss on the local machine using MNIST dataset:
 
-```python
+```sh
 python magnet_loss_test.py --lr 1e-4 --batch-size 64 --mnist --dml
 ```
 
@@ -59,12 +59,12 @@ python magnet_loss_test.py --lr 1e-4 --batch-size 64 --mnist --dml
 
 To build Docker image:
 
-```python
+```sh
 docker build -t magnetloss:latest .
 ```
 
 ### Docker: Train
 To deploy and train on Docker container:
-```python
+```sh
 docker run -it magnetloss:latest python --lr 1e-4 --batch-size 64 --mnist --dml
 ```
