@@ -229,7 +229,7 @@ def run_magnet_loss():
 			batch_loss.backward()
 			optimizer.step()
 
-			pdb.set_trace()
+			#pdb.set_trace()
 
 		# Update loss index
 		batch_builder.update_losses(batch_example_inds,
