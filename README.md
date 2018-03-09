@@ -14,8 +14,8 @@ PyTorch implementation of the Magnet Loss for Deep Metric Learning, based onthe 
 
 The program requires the following dependencies (easy to install using pip, Ananconda or Docker):
 
-* python (tested on 2.7)
-* pytorch (tested with 0.3 CUDA 8.0)
+* python (tested on 2.7 and 3.6)
+* pytorch (tested with v0.3 and v0.3.1 with CUDA 8.0)
 * numpy
 * matplotlib
 * seaborn
@@ -30,16 +30,18 @@ The program requires the following dependencies (easy to install using pip, Anan
 
 #### Anaconda: Installation
 
-To install MagnetLoss Python 2.7 Cuda 8.0 in an Anaconda environment:
+To install MagnetLoss in an Anaconda environment:
 
 ```sh
-conda env create -f pytorch-2p7-cuda80.yml
+(Python 2.7) conda env create -f pytorch-2p7-cuda80.yml
+(Python 3.6) conda env create -f pytorch-3p6-cuda80.yml
 ```
 
 To activate Anaconda environment:
 
 ```sh
-source activate magnet-loss-py27-env
+(Python 2.7) source activate magnet-loss-py27-env
+(Python 3.6) source activate magnet-loss-py36-env
 ```
 
 ### Anaconda: Train
