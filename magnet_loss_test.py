@@ -42,31 +42,10 @@ class LeNet(nn.Module):
 		Define the initialization function of LeNet, this function defines
 		the basic structure of the neural network
 		'''
-
-		# Inherited the parent class initialization method, that is, first
-		# run nn.Module initialization function
 		super(LeNet, self).__init__()
-		#self.embed = nn.Embedding(64, 2)
-		# Define convolution layer: input 1 channel (grayscale) picture,
-		# output 6 feature map, convolution kernel 5x5
-		self.conv1 = nn.Conv2d(1, 32, kernel_size=5, stride=1, padding=2) # input is 28x28. padding=2 for same padding
-		# Define convolution layer: enter 6 feature maps, output 16 feature
-		# maps, convolution kernel 5x5
-		self.conv2 = nn.Conv2d(32, 64, kernel_size=5, stride=1, padding=2) # feature map size is 14*14 by pooling
-		# Define the fully connected layer: linear connection (y = Wx + b),
-		# 16 * 5 * 5 nodes connected to 120 nodes
-		#self.fc1 = nn.Linear(64*7*7, self.emb_dim)
+		self.conv1 = nn.Conv2d(1, 32, kernel_size=5, stride=1, padding=2)
+		self.conv2 = nn.Conv2d(32, 64, kernel_size=5, stride=1, padding=2)
 		self.emb = nn.Linear(64*7*7, self.emb_dim)
-		# Define the fully connected layer: linear connection (y = Wx + b),
-		# 120 nodes connected to 84 nodes
-		#self.fc2 = nn.Linear(120, 84)
-		# Define the fully connected layer: linear connection (y = Wx + b),
-		# 84 nodes connected to 10 nodes
-		#self.fc3 = nn.Linear(84, 10)
-
-		#self.embedding = nn.Linear(2, self.emb_dim)
-
-		#self.norm_emb =  L2_Normalize(self.emb)
 
 		self.layer1 = None
 		self.layer2 = None
@@ -80,50 +59,19 @@ class LeNet(nn.Module):
 		the backward propagation function (autograd)
 		'''
 
-		# Input x -> conv1 -> relu -> 2x2 the largest pool of windows ->
-		# update to x
 		x = F.max_pool2d(F.relu(self.conv1(x)), 2)
 		self.layer1 = x
 
-		# Input x -> conv2 -> relu -> 2x2 window maximum pooling -> update
-		# to x
 		x = F.max_pool2d(F.relu(self.conv2(x)), 2)
 		self.layer2 = x
 
-		# The view function changes the tens x into a one-dimensional vector
-		# form with the total number of features unchanged, ready for the
-		# fully connected layer
 		x = x.view(-1, self.num_flat_features(x))
-		#x = x.view(-1, self.num_flat_features(x))
 		self.features = x
-		#self.features = features
-		#features.register_hook(print)
 
-		# Input x -> fc1 -> relu, update to x
-		#x = F.relu(self.fc1(x))
 		x = self.emb(x)
-		#fc1 = x
 		embeddings = x
-		#pdb.set_trace()
-		# Input x -> fc2 -> relu, update to x
-		#x = F.relu(self.fc2(x))
-		#fc2 = x
 
-		# Input x -> fc3 -> relu, update to x
-		#x = self.fc3(x)
-		#fc3 = x
-
-		#pdb.set_trace()
-
-		#x = self.embedding(x)
-		#pdb.set_trace()
-		#x.register_hook(print)
-		#x = self.norm_emb(x)
-
-		#norm_emb = x
-		norm_embeddings = self.l2_normalize(x, 1)
-		#pdb.set_trace()
-		return embeddings, norm_embeddings
+		return embeddings, self.features
 
 	def num_flat_features(self, x):
 		'''
@@ -159,7 +107,7 @@ def run_magnet_loss():
 	'''
 	m = 8
 	d = 8
-	k = 3
+	k = 8
 	alpha = 1.0
 	batch_size = m * d
 
@@ -174,9 +122,8 @@ def run_magnet_loss():
 	n_steps = epoch_steps * 15
 	cluster_refresh_interval = epoch_steps
 
-	model = LeNet(emb_dim)
+	model = torch.nn.DataParallel(LeNet(emb_dim)).cuda()
 	print(model)
-	model.cuda()
 
 	#model = EncoderCNN(64)
 	#model.cuda()
@@ -206,7 +153,7 @@ def run_magnet_loss():
 	batch_example_inds, batch_class_inds = batch_builder.gen_batch()
 	trainloader.sampler.batch_indices = batch_example_inds
 	#pdb.set_trace()
-	
+
 	_ = model.train()
 
 	losses = AverageMeter()
@@ -222,14 +169,12 @@ def run_magnet_loss():
 			output, features = model(img)
 
 			batch_loss, batch_example_losses = minibatch_magnet_loss(output,
-													   	  			batch_class_inds, 
-													   	  			m, 
-													   	  			d, 
+													   	  			batch_class_inds,
+													   	  			m,
+													   	  			d,
 													   	  			alpha)
 			batch_loss.backward()
 			optimizer.step()
-
-			#pdb.set_trace()
 
 		# Update loss index
 		batch_builder.update_losses(batch_example_inds,

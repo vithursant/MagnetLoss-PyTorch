@@ -1,0 +1,23 @@
+name: magnet-loss-py27-env
+channels:
+  - conda-forge
+  - ioam
+  - pytorch
+dependencies:
+  - python=2.7
+  - numpy
+  - mkl
+  - jupyter
+  - pandas
+  - matplotlib
+  - seaborn
+  - pip:
+    - tqdm
+    - pillow
+    - packaging
+    - appdirs
+    - gpustat
+    - sklearn
+    - http://download.pytorch.org/whl/cu80/torch-0.3.0.post4-cp27-cp27mu-linux_x86_64.whl
+    - torchvision
+    - visdom

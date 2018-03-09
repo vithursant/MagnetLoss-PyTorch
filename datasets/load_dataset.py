@@ -56,14 +56,14 @@ def load_dataset(args):
 		transform = transforms.Compose([transforms.ToTensor(),
 		                                transforms.Normalize((0.1307,), (0.3081,))])
 
-		trainset = FASHION(root='./data', 
-								train=True, 
+		trainset = FASHION(root='./data',
+								train=True,
 								transform=transform,
 								download=True
 								)
 
-		testset = FASHION(root='./data', 
-							   train=False, 
+		testset = FASHION(root='./data',
+							   train=False,
 							   transform=transform,
 							   download=True)
 
@@ -71,7 +71,7 @@ def load_dataset(args):
 	if args.spld:
 		train_idx = numpy.arange(len(trainset))
 		numpy.random.shuffle(train_idx)
-		n_train = len(train_idx) 
+		n_train = len(train_idx)
 		train_sampler = SubsetSequentialSamplerSPLD(train_idx.tolist())
 		trainloader = DataLoader(trainset,
 								 batch_size=args.batch_size,

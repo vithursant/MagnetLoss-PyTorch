@@ -19,7 +19,7 @@ def moving_average(a, n=3) :
 def plot_smooth(history, name):
     #pdb.set_trace()
     plt.plot(history, 'c', moving_average(history, 20), 'b')
-    plt.savefig(str(name) + '.eps')
+    plt.savefig("results" + str(name) + '.svg')
 
 def show_images(H):
     # make a square grid
@@ -32,7 +32,7 @@ def show_images(H):
     for i in range(num):
         grid[i].axis('off')
         grid[i].imshow(H[i], cmap='Greys')
-        
+
     # Turn any unused axes off
     for j in range(i, len(grid)):
         grid[j].axis('off')
@@ -70,7 +70,7 @@ def plot_embedding(X, y, imgs=None, title=None, name=None):
     if title is not None:
         plt.title(title)
 
-    plt.savefig(str(name) + '.eps')
+    plt.savefig("results/" + str(name) + '.svg')
 
 def zip_chain(a, b):
     return list(chain(*zip(a, b)))
