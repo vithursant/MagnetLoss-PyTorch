@@ -52,23 +52,7 @@ Train ConvNet with Magnet Loss on the local machine using MNIST dataset:
 python magnet_loss_test.py --lr 1e-4 --batch-size 64 --mnist --dml
 ```
 
-## Docker
-
-### Docker: Installation
-
-**Prerequisites: Docker installed on your machine. If you don't have Docker installed already, then go here to [Docker Setup](https://docs.docker.com/engine/getstarted/step_one/)**
-
-To build Docker image:
-
-```sh
-docker build -t magnetloss:latest .
-```
-
-### Docker: Train
-To deploy and train on Docker container:
-```sh
-docker run -it magnetloss:latest python --lr 1e-4 --batch-size 64 --mnist --dml
-```
+## Docker GPU Training (WIP)
 
 ## Results
 ### MNIST
