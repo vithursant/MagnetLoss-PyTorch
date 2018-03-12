@@ -67,24 +67,8 @@ def load_dataset(args):
 							   transform=transform,
 							   download=True)
 
-	# Self-Paced Learning Enabled
-	if args.spld:
-		train_idx = numpy.arange(len(trainset))
-		numpy.random.shuffle(train_idx)
-		n_train = len(train_idx)
-		train_sampler = SubsetSequentialSamplerSPLD(train_idx.tolist())
-		trainloader = DataLoader(trainset,
-								 batch_size=args.batch_size,
-								 shuffle=False,
-								 num_workers=4,
-								 sampler=train_sampler)
-
-		testloader = DataLoader(testset,
-								batch_size=args.batch_size,
-								shuffle=False,
-								num_workers=4)
 	# Deep Metric Learning
-	elif args.dml:
+	if args.magnet_loss:
 		n_train = len(trainset)
 		train_sampler = SubsetSequentialSampler(range(len(trainset)), range(args.batch_size))
 		trainloader = DataLoader(trainset,

@@ -71,7 +71,7 @@ docker run --rm -it --runtime=nvidia magnetloss python magnet_loss_test.py --lr 
 ```
 or
 ```sh
-./run_gpu_docker.sh <DOCKER IMAGE NAME>
+./run_gpu_docker.sh magnetloss
 ```
 
 ## Results
@@ -86,3 +86,6 @@ or
 |10000 | <img src="results/10000.png" width="200">|
 |12000 | <img src="results/12000.png" width="200">|
 |14000 | <img src="results/14000.png" width="200">|
+
+#### Other Implementations
+* [Magnet Loss in Tensorflow](https://github.com/pumpikano/tf-magnet-loss)

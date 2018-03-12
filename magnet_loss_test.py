@@ -1,6 +1,7 @@
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
+
 import numpy as np
 from math import ceil
 from tqdm import tqdm
@@ -63,14 +64,8 @@ def run_magnet_loss():
 		model = torch.nn.DataParallel(VGG(depth=16, num_classes=emb_dim))
 	print(model)
 
-	#model = EncoderCNN(64)
-	#model.cuda()
-
-	#model = VGG(11)
-	#model.cuda()
-
 	optimizer = optim.Adam(model.parameters(), lr=args.lr)
-	#optimizer = optim.Adam(list(model.resnet.fc.parameters()), lr=args.lr)
+
 	minibatch_magnet_loss = MagnetLoss()
 
 	images = getattr(trainset, 'train_data')
@@ -90,7 +85,6 @@ def run_magnet_loss():
 
 	batch_example_inds, batch_class_inds = batch_builder.gen_batch()
 	trainloader.sampler.batch_indices = batch_example_inds
-	#pdb.set_trace()
 
 	_ = model.train()
 
@@ -100,7 +94,6 @@ def run_magnet_loss():
 		for batch_idx, (img, target) in enumerate(trainloader):
 
 			img = Variable(img).cuda()
-			#pdb.set_trace()
 			target = Variable(target).cuda()
 
 			optimizer.zero_grad()
@@ -137,7 +130,7 @@ def run_magnet_loss():
 
 		losses.update(batch_loss, 1)
 
-		# log avg values to somewhere
+		# Log the training loss
 		if args.visdom:
 			plotter.plot('loss', 'train', i, losses.avg.data[0])
 

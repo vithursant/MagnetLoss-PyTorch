@@ -1,3 +1,6 @@
+"""
+ClusterBatchBuilder framework ported from https://github.com/pumpikano/tf-magnet-loss/blob/master/magnet_tools.py.
+"""
 from math import ceil
 import numpy as np
 from tqdm import tqdm
@@ -12,7 +15,6 @@ from torch.utils.data import DataLoader
 def compute_reps(model, X, chunk_size):
     """Compute representations for input in chunks."""
     chunks = int(ceil(float(len(X)) / chunk_size))
-    #print(chunks)
     reps = []
     labels = []
 
@@ -23,13 +25,9 @@ def compute_reps(model, X, chunk_size):
 
     for batch_idx, (img, target) in tqdm(enumerate(trainloader)):
         img = Variable(img).cuda()
-        #pdb.set_trace()
         output, train_features = model(img)
-        #train_features = model(img)
         embeddings = output.data
-        #pdb.set_trace()
         reps.append(embeddings.cpu().numpy())
-        #labels.append(target.cpu().numpy())
     return np.vstack(reps)
 
 class ClusterBatchBuilder(object):
@@ -53,7 +51,7 @@ class ClusterBatchBuilder(object):
             self.assignments = np.zeros_like(labels, int)
         else:
             self.assignments = np.zeros_like(labels.numpy(), int)
-                        
+
         self.cluster_assignments = {}
         self.cluster_classes = np.repeat(range(self.num_classes), k)
         self.example_losses = None
@@ -62,11 +60,9 @@ class ClusterBatchBuilder(object):
 
 
     def update_clusters(self, rep_data, max_iter=20):
-        """
-        Given an array of representations for the entire training set,
+        """Given an array of representations for the entire training set,
         recompute clusters and store example cluster assignments in a
-        quickly sampleable form.
-        """
+        quickly sampleable form."""
         # Lazily allocate array for centroids
         if self.centroids is None:
             self.centroids = np.zeros([self.num_classes * self.k, rep_data.shape[1]])
@@ -75,7 +71,6 @@ class ClusterBatchBuilder(object):
         for c in range(self.num_classes):
 
             class_mask = self.labels == c
-            #pdb.set_trace()
             class_examples = rep_data[class_mask]
             kmeans = KMeans(n_clusters=self.k, init='k-means++', n_init=1, max_iter=max_iter)
             kmeans.fit(class_examples)
@@ -95,27 +90,16 @@ class ClusterBatchBuilder(object):
 
 
     def update_losses(self, indexes, losses):
-        """
-        Given a list of examples indexes and corresponding losses
-        store the new losses and update corresponding cluster losses.
-        """
+        """Given a list of examples indexes and corresponding losses
+        store the new losses and update corresponding cluster losses."""
         # Lazily allocate structures for losses
         if self.example_losses is None:
             self.example_losses = np.zeros_like(self.labels, float)
             self.cluster_losses = np.zeros([self.k * self.num_classes], float)
             self.has_loss = np.zeros_like(self.labels, bool)
 
-        # Update example losses
-        #print(indexes)
-        #print(type(indexes))
-        #indexes = np.array(indexes)
-        #print(indexes)
-        #print(type(indexes))
         losses = losses.data.cpu().numpy()
-        #print(losses)
-        #print(type(losses))
-        #sprint(losses.view(12,-1))
-        #exit()
+
         self.example_losses[indexes] = losses
         self.has_loss[indexes] = losses
 
@@ -129,14 +113,12 @@ class ClusterBatchBuilder(object):
             self.cluster_losses[cluster] = np.mean(cluster_example_losses[self.has_loss[cluster_inds]])
 
     def gen_batch(self):
-        """
-        Sample a batch by first sampling a seed cluster proportionally to
+        """Sample a batch by first sampling a seed cluster proportionally to
         the mean loss of the clusters, then finding nearest neighbor
         "impostor" clusters, then sampling d examples uniformly from each cluster.
-        
+
         The generated batch will consist of m clusters each with d consecutive
-        examples.
-        """
+        examples."""
 
         # Sample seed cluster proportionally to cluster losses if available
         if self.cluster_losses is not None:
@@ -177,14 +159,10 @@ class ClusterBatchBuilder(object):
         return batch_indexes, np.repeat(batch_class_inds, self.d)
 
     def get_cluster_ind(self, c, i):
-        """
-        Given a class index and a cluster index within the class
-        return the global cluster index
-        """
+        """Given a class index and a cluster index within the class
+        return the global cluster index"""
         return c * self.k + i
 
     def get_class_ind(self, c):
-        """
-        Given a cluster index return the class index.
-        """
+        """Given a cluster index return the class index."""
         return c / self.k
