@@ -56,8 +56,8 @@ python magnet_loss_test.py --lr 1e-4 --batch-size 64 --mnist --dml
 
 ### Prerequisites:
 1. Docker installed on your machine. If you don't have Docker installed already, then go here to [Docker Setup](https://docs.docker.com/engine/getstarted/step_one/)
-2. Install `nvidia-docker 2.0` from [Nvidia Docker 2.0](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
-3. Register `nvidia` runtime with the Docker engine [Nvidia Container Runtime](https://github.com/NVIDIA/nvidia-container-runtime)
+2. Install `nvidia-docker 2.0` from [Nvidia Docker 2.0](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0))
+3. Register `nvidia` runtime with the Docker engine using [Nvidia Container Runtime](https://github.com/NVIDIA/nvidia-container-runtime)
 
 ### Docker: Build Image
 ```sh
