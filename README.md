@@ -1,8 +1,8 @@
 # Magnet-Loss-PyTorch
 
-PyTorch implementation of the Magnet Loss for Deep Metric Learning, based onthe following paper:
+PyTorch implementation of the Magnet Loss for Deep Metric Learning, based on the following paper:
 
-* [Metric Learning with Adaptive Density Discrimination](https://arxiv.org/pdf/1511.05939.pdf) by Oren Rippel, Piotr Dollar, Manohar Paluri, Lubomir Bourdev
+* [Metric Learning with Adaptive Density Discrimination](https://research.fb.com/wp-content/uploads/2016/05/metric-learning-with-adaptive-density-discrimination.pdf?) by Oren Rippel, Piotr Dollar, Manohar Paluri, Lubomir Bourdev from Facebook AI Research that was accepted into ICLR 2016.
 
 ## Table of Contents
 * [Installation](#installation)
