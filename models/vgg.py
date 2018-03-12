@@ -9,11 +9,11 @@ cfg = {
 }
 
 class VGG(nn.Module):
-    def __init__(self, depth, num_classes=10):
+    def __init__(self, depth, num_classes=10, channels=3):
         assert depth in cfg, 'Error: model depth invalid or undefined!'
-        
+
         super(VGG, self).__init__()
-        self.feature_extractor = self._make_layers(cfg[depth])
+        self.feature_extractor = self._make_layers(cfg[depth], channels)
         self.classifier = nn.Sequential(
             nn.Linear(512, 512),
             nn.ReLU(inplace=True),
@@ -31,9 +31,9 @@ class VGG(nn.Module):
         x = self.classifier(x)
         return x, features
 
-    def _make_layers(self, config):
+    def _make_layers(self, config, channels):
         layers = []
-        in_channels = 3
+        in_channels = channels
         for x_cfg in config:
             if x_cfg == 'M':
                 layers += [nn.MaxPool2d(kernel_size=2, stride=2)]

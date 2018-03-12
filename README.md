@@ -15,7 +15,7 @@ PyTorch implementation of the Magnet Loss for Deep Metric Learning, based onthe 
 The program requires the following dependencies (easy to install using pip, Ananconda or Docker):
 
 * python (tested on 2.7 and 3.6)
-* pytorch (tested with v0.3 and v0.3.1 with CUDA 8.0)
+* pytorch (tested with v0.3 and v0.3.1 with CUDA 8.0/9.0)
 * numpy
 * matplotlib
 * seaborn
@@ -52,7 +52,27 @@ Train ConvNet with Magnet Loss on the local machine using MNIST dataset:
 python magnet_loss_test.py --lr 1e-4 --batch-size 64 --mnist --dml
 ```
 
-## Docker GPU Training (WIP)
+## Docker GPU Training
+
+### Prerequisites:
+1. Docker installed on your machine. If you don't have Docker installed already, then go here to [Docker Setup](https://docs.docker.com/engine/getstarted/step_one/)
+2. Install `nvidia-docker 2.0` from [Nvidia Docker 2.0](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
+3. Register `nvidia` runtime with the Docker engine [Nvidia Container Runtime](https://github.com/NVIDIA/nvidia-container-runtime)
+
+### Docker: Build Image
+```sh
+docker build -t magnetloss .
+```
+
+### Docker: Train
+Deploy and train on Docker container:
+```sh
+docker run --rm -it --runtime=nvidia magnetloss python magnet_loss_test.py --lr 1e-4 --mnist --batch-size 64 --dml
+```
+or
+```sh
+./run_gpu_docker.sh <DOCKER IMAGE NAME>
+```
 
 ## Results
 ### MNIST
