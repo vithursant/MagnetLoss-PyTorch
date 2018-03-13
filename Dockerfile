@@ -31,7 +31,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 # Install Python dependencies
 RUN pip install -U \
       numpy \
-	    matplotlib \
+      matplotlib \
       seaborn \
       pandas \
       tqdm \
