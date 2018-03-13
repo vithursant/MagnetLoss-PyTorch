@@ -28,19 +28,20 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python get-pip.py && \
     rm get-pip.py
 
-RUN \
-	pip install -U numpy \
-	jupyter \
-	matplotlib \
-	seaborn \
-	pandas \
-	tqdm \
-	pillow \
-	setuptools \
-	sklearn \
-	scipy \
-	visdom
+# Install Python dependencies
+RUN pip install -U \
+      numpy \
+	    matplotlib \
+      seaborn \
+      pandas \
+      tqdm \
+      pillow \
+      setuptools \
+      sklearn \
+      scipy \
+      visdom
 
+# Install PyTorch
 RUN pip install http://download.pytorch.org/whl/cu90/torch-0.3.1-cp27-cp27mu-linux_x86_64.whl
 RUN pip install torchvision
 
