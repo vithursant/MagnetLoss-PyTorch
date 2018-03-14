@@ -10,7 +10,7 @@ PyTorch implementation of the Magnet Loss for Deep Metric Learning, based on the
 * [Docker](#docker)
 * [Results](#results)
 * [Other Implementations](#other-implementations)
-* [Citing MagnetLoss-PyTorch](#magnetloss-pytorch)
+* [Citing MagnetLoss-PyTorch](#citing-magnetloss-pytorch)
 
 ## Installation
 
