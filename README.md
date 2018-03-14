@@ -9,6 +9,8 @@ PyTorch implementation of the Magnet Loss for Deep Metric Learning, based on the
 * [Anaconda](#anaconda)
 * [Docker](#docker)
 * [Results](#results)
+* [Other Implementations](#other-implementations)
+* [Citing MagnetLoss-PyTorch](#magnetloss-pytorch)
 
 ## Installation
 
@@ -87,5 +89,21 @@ or
 |12000 | <img src="results/12000.png" width="200">|
 |14000 | <img src="results/14000.png" width="200">|
 
-#### Other Implementations
+### Other Implementations
 * [Magnet Loss in Tensorflow](https://github.com/pumpikano/tf-magnet-loss)
+
+### Citing MagnetLoss-PyTorch
+If you use MagnetLoss-PyTorch in a scientific publication, I would appreciate references to the source code.
+
+Biblatex entry:
+
+```latex
+@misc{vithu2018,
+  author = {Thangarasa, Vithursan},
+  title = {MagnetLoss-PyTorch},
+  year = {2018},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/vithursant/MagnetLoss-PyTorch}}
+}
+```
