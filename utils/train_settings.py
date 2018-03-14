@@ -24,7 +24,7 @@ def parse_settings():
 						help='name of experiment')
 	return parser.parse_args()
 
-def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, filename='checkpoint.pth.tar', args):
     """Saves checkpoint to disk"""
     directory = "runs/%s/"%(args.name)
 
