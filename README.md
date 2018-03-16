@@ -51,7 +51,7 @@ To activate Anaconda environment:
 Train ConvNet with Magnet Loss on the local machine using MNIST dataset:
 
 ```sh
-python magnet_loss_test.py --lr 1e-4 --batch-size 64 --mnist --dml
+python magnet_loss_test.py --lr 1e-4 --batch-size 64 --mnist --magnet-loss
 ```
 
 ## Docker GPU Training
@@ -69,7 +69,7 @@ docker build -t magnetloss .
 ### Docker: Train
 Deploy and train on Docker container:
 ```sh
-docker run --rm -it --runtime=nvidia magnetloss python magnet_loss_test.py --lr 1e-4 --mnist --batch-size 64 --dml
+docker run --rm -it --runtime=nvidia magnetloss python magnet_loss_test.py --lr 1e-4 --mnist --batch-size 64 --magnet-loss
 ```
 or
 ```sh
