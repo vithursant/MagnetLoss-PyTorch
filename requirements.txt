@@ -1,0 +1,10 @@
+matplotlib
+numpy
+pandas
+pillow
+scipy
+seaborn
+setuptools
+sklearn
+tqdm
+visdom
