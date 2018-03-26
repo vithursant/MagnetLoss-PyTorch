@@ -1,4 +1,4 @@
-# Magnet-Loss-PyTorch
+# MagnetLoss-PyTorch
 
 PyTorch implementation of the Magnet Loss for Deep Metric Learning, based on the following paper:
 
@@ -94,7 +94,7 @@ If you use MagnetLoss-PyTorch in a scientific publication, I would appreciate re
 Biblatex entry:
 
 ```latex
-@misc{vithu2018,
+@misc{MagnetLossPyTorch,
   author = {Thangarasa, Vithursan},
   title = {MagnetLoss-PyTorch},
   year = {2018},
