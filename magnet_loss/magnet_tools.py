@@ -165,4 +165,4 @@ class ClusterBatchBuilder(object):
 
     def get_class_ind(self, c):
         """Given a cluster index return the class index."""
-        return c / self.k
+        return c // self.k
